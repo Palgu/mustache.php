@@ -128,14 +128,14 @@ class Mustache_Context
     {
         $chunks = explode('.', $id);
         $first  = array_shift($chunks);
-        $value  = $this->findVariableInStack($first, $this->stack);
+        $value  = $this->findVariableInStack($first, $this->stack, $id);
 
         foreach ($chunks as $chunk) {
             if ($value === '') {
                 return $value;
             }
 
-            $value = $this->findVariableInStack($chunk, array($value));
+            $value = $this->findVariableInStack($chunk, array($value),$id);
         }
 
         return $value;
@@ -205,7 +205,7 @@ class Mustache_Context
      *
      * @return mixed Variable value, or '' if not found
      */
-    private function findVariableInStack($id, array $stack)
+    private function findVariableInStack($id, array $stack, $key=null)
     {
         for ($i = count($stack) - 1; $i >= 0; $i--) {
             $frame = &$stack[$i];
@@ -236,7 +236,10 @@ class Mustache_Context
                     break;
             }
         }
-
-        return '';
+        if(explode('.',$key)[0]=='language'){
+        return "$key (it's empty)";
+        }else{
+            return '';
+        }
     }
 }
